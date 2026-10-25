@@ -1,0 +1,20 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# MNIST download cache used by python/train_export.py
+.mnist-cache/
+
+# Build outputs, profiles, test binaries
+dist/
+*.out
+*.test
+*.prof
+
+# Claude's workspace-only module file (see docs/decisions.md)
+go.local.mod
+go.local.sum
+
+# macOS
+.DS_Store

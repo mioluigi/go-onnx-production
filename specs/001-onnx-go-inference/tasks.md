@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **DRAFT — awaiting Luis's approval** |
+| Status | **APPROVED — 2026-10-25** |
 | Implements | `plan.md` → `spec.md` (APPROVED v2) |
 
 **How to work this list:** one task = one commit (message starts with the task ID). 🔴 tasks write tests that
@@ -17,7 +17,7 @@ early, while the Go packages are built in parallel on synthetic models.
 ## Phase 0 — Setup
 - [ ] **T00 👤 Python environment on the Mac.** `.venv` with torch, torchvision, onnx, onnxruntime, onnxscript; send versions.
   Done when: versions known for `requirements.txt`.
-- [ ] **T01 🤖 Scaffolding.** `CLAUDE.md`, `.gitignore` (`.venv/`, `dist/`, `*.out`, MNIST download cache), `docs/decisions.md`, `go.mod` pinned to GoMLX v0.28.17 / onnx-gomlx v0.5.14, `python/requirements.txt`.
+- [x] **T01 🤖 Scaffolding.** `CLAUDE.md`, `.gitignore` (`.venv/`, `dist/`, `*.out`, MNIST download cache), `docs/decisions.md`, `go.mod`. *(GoMLX version pins are added in T08 with the first code that imports them, then `go mod tidy` on the Mac; `python/requirements.txt` is written in T03 from the Mac's installed versions.)*
   Verify: `go mod verify`.
 
 ## Phase 1 — The model (riskiest first)

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **DRAFT — awaiting Luis's approval** |
+| Status | **APPROVED — 2026-10-25** |
 | Implements | `spec.md` (APPROVED v2) |
 | Governing rules | `docs/constitution.md` |
 | Evidence | `docs/spikes/001-gomlx-onnx.md`, `docs/reviews/001-spec-review.md` |

@@ -34,7 +34,7 @@ early, while the Go packages are built in parallel on synthetic models.
 - [x] **T09 🤖 Monte Carlo benchmarks** (`BenchmarkPredict/batch=1…10000`).
 
 ## Phase 3 — The program
-- [ ] **T10 🔴 End-to-end tests** for `cmd/predict-digits` (no args → PASS; CSV errors; flags; stderr logs).
+- [x] **T10 🔴 End-to-end tests** for `cmd/predict-digits` (no args → PASS; CSV errors; flags; stderr logs).
 - [ ] **T11 🟢 `cmd/predict-digits`** with embedded assets, backend selection, timings, CSV mode.
 - [ ] **T12 👤 XLA on the Mac.** `go run ./cmd/predict-digits -backend xla` (first run downloads the XLA plugin); confirm PASS.
 

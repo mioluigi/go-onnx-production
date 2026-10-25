@@ -73,3 +73,7 @@ checked against ONNX Runtime 1.29 on 50 random inputs.
    which ONNX Runtime 1.29 refuses ("max supported IR version: 13"). Exports must set a compatible IR
    version or opset, and versions must be pinned.
 8. **Still to confirm on Luis's Mac:** an actual `torch.onnx.export` of the trained model (task in the plan).
+   **Confirmed 2026-10-25 (T03):** PyTorch 2.14.1's `torch.onnx.export(dynamo=True)` produced a graph of only
+   `Gemm`, `Relu` and `Softmax` (IR 10, opset 18). In Go (pure-Go backend, fusion on) the predictions on all
+   10,000 official MNIST test images match PyTorch's: labels 10,000/10,000 identical, largest probability
+   difference 1.37 × 10⁻⁶, accuracy 97.11 % in both. The test-file MD5 checksums match the official MNIST files.

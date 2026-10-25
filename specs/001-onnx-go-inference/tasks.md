@@ -22,7 +22,7 @@ early, while the Go packages are built in parallel on synthetic models.
 
 ## Phase 1 — The model (riskiest first)
 - [x] **T02 🤖 `python/train_export.py`.** Train the 784 → 128 → 64 → 10 network (fixed seed), export ONNX (`input` → `probabilities`, dynamic batch, compatible IR version), copy the official test files, write PyTorch's test-set probabilities in IDX format, verify the export with ONNX Runtime before saving.
-- [ ] **T03 👤 Run it on the Mac; commit `assets/`.** Then run Claude's quick check (`go run ./internal/checkexport`, a throwaway parity check) — **the go/no-go gate** for the rest of the plan.
+- [x] **T03 👤 Run it on the Mac; commit `assets/`.** Then run Claude's quick check — **the go/no-go gate** for the rest of the plan. *(Done: the gate ran as `predict-digits -backend go -runs 0`, since T11 was ready, instead of a throwaway checker. PASS: 10,000/10,000 labels, largest difference 1.37 × 10⁻⁶. See spike finding 8.)*
   Done when: test accuracy ~97–98 %; Go and PyTorch agree on all 10,000 images.
 
 ## Phase 2 — Reusable packages (built on synthetic data; can overlap with T02–T03)

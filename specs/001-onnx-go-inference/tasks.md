@@ -26,7 +26,7 @@ early, while the Go packages are built in parallel on synthetic models.
   Done when: test accuracy ~97–98 %; Go and PyTorch agree on all 10,000 images.
 
 ## Phase 2 — Reusable packages (built on synthetic data; can overlap with T02–T03)
-- [ ] **T04 🤖 `python/make_test_models.py` + `inference/testdata/`.** Tiny ONNX models with known answers.
+- [x] **T04 🤖 `python/make_test_models.py` + `inference/testdata/`.** Tiny ONNX models with known answers.
 - [ ] **T05 🔴🟢 `idx` package.** Tests, then implementation. Verify: `go test -cover ./idx/` ≥ 90 %.
 - [ ] **T06 🔴🟢 `parity` package.** Tests (incl. NaN), then implementation. Verify: ≥ 90 %.
 - [ ] **T07 🔴 `inference` tests.** Known answers, fusion on/off, invalid model and input cases, `Labels`.

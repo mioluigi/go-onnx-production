@@ -1,0 +1,5 @@
+Python 3.14.2 · 10000 test images
+PyTorch 2.14.1: accuracy 0.9711; parity with PyTorch PASS (labels 10000/10000, largest difference 0.00e+00)
+benchmark language=python runtime=pytorch load_ms=980.31 first_ms=4.47 bulk_ms=3.83 latency_p50_us=28.1 latency_p95_us=30.7 bulk_runs=20 latency_calls=1000
+ONNX Runtime 1.31.0: accuracy 0.9711; parity with PyTorch PASS (labels 10000/10000, largest difference 1.49e-06)
+benchmark language=python runtime=onnxruntime load_ms=58.95 first_ms=0.76 bulk_ms=5.18 latency_p50_us=11.8 latency_p95_us=12.0 bulk_runs=20 latency_calls=1000

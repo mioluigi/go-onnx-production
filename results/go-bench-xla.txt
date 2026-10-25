@@ -1,0 +1,6 @@
+--- FAIL: BenchmarkPredict
+    benchmark_test.go:29: Load: GoMLX backend unavailable: can't find backend "xla" for configuration "xla" given, backends available: "go"
+FAIL
+exit status 1
+FAIL	github.com/mioluigi/go-onnx-production/inference	0.364s
+FAIL

@@ -1,0 +1,4 @@
+machine: Darwin arm64 · Apple M1 Max · 64 GB · macOS 27.0.1
+go: go1.27.2
+python: 3.14.2
+measured: 2026-10-25 15:28 EDT

@@ -31,7 +31,7 @@ early, while the Go packages are built in parallel on synthetic models.
 - [x] **T06 🔴🟢 `parity` package.** Tests (incl. NaN), then implementation. Verify: ≥ 90 %.
 - [x] **T07 🔴 `inference` tests.** Known answers, fusion on/off, invalid model and input cases, `Labels`.
 - [x] **T08 🟢 `inference` implementation.** Verify: `go test -cover ./inference/` ≥ 90 %, `go vet` clean.
-- [ ] **T09 🤖 Monte Carlo benchmarks** (`BenchmarkPredict/batch=1…10000`).
+- [x] **T09 🤖 Monte Carlo benchmarks** (`BenchmarkPredict/batch=1…10000`).
 
 ## Phase 3 — The program
 - [ ] **T10 🔴 End-to-end tests** for `cmd/predict-digits` (no args → PASS; CSV errors; flags; stderr logs).

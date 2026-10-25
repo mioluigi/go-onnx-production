@@ -39,7 +39,7 @@ early, while the Go packages are built in parallel on synthetic models.
 - [ ] **T12 👤 XLA on the Mac.** `go run ./cmd/predict-digits -backend xla` (first run downloads the XLA plugin); confirm PASS.
 
 ## Phase 4 — Python timing and measurement
-- [ ] **T13 🤖 `python/bench_python.py`** (PyTorch and ONNX Runtime; bulk, latency, load, first prediction; `--predict-only`).
+- [x] **T13 🤖 `python/bench_python.py`** (PyTorch and ONNX Runtime; bulk, latency, load, first prediction; `--predict-only`).
 - [ ] **T14 🤖 `cmd/measure` (from Week 4), `scripts/measure.sh`, `scripts/tables.sh`.**
 - [ ] **T15 👤 Run all measurements on the Mac** (Python, Go × 2 backends, Monte Carlo, profiles, whole program); commit `results/`.
 

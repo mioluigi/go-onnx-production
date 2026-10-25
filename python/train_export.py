@@ -24,6 +24,7 @@ from torch import nn
 from torchvision.datasets import MNIST
 
 from mnist_io import (onnx_summary, onnxruntime_probabilities, read_idx, to_model_input, write_idx)
+from mnist_model import DigitClassifier, WithProbabilities
 
 REPO = Path(__file__).resolve().parent.parent
 ASSETS = REPO / "assets"
@@ -32,32 +33,6 @@ EXPORT_TOLERANCE = 1e-5
 # ONNX Runtime may lag the newest onnx package; IR version 10 works with opset 18 (spike finding 7).
 ONNX_IR_VERSION = 10
 ONNX_OPSET = 18
-
-
-class DigitClassifier(nn.Module):
-    """Multilayer network 784 -> 128 -> 64 -> 10. Outputs logits, as CrossEntropyLoss expects for training."""
-
-    def __init__(self):
-        super().__init__()
-        self.layers = nn.Sequential(
-            nn.Linear(784, 128), nn.ReLU(),
-            nn.Linear(128, 64), nn.ReLU(),
-            nn.Linear(64, 10),
-        )
-
-    def forward(self, inputs):
-        return self.layers(inputs)
-
-
-class WithProbabilities(nn.Module):
-    """The exported model: the classifier followed by softmax, so its output is class probabilities."""
-
-    def __init__(self, classifier):
-        super().__init__()
-        self.classifier = classifier
-
-    def forward(self, inputs):
-        return torch.softmax(self.classifier(inputs), dim=1)
 
 
 def load_split(train):

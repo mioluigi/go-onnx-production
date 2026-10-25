@@ -41,6 +41,8 @@ go-onnx-production/
 ├── cmd/predict-digits/      the program: parity check, timings, or predictions for a user's CSV
 ├── cmd/measure/             whole-program time and memory tool (from Week 4)
 ├── python/
+│   ├── mnist_model.py       the PyTorch model classes (no torchvision import)
+│   ├── mnist_io.py          input contract, IDX read/write, ONNX Runtime helper
 │   ├── train_export.py      train, export ONNX, save test set and PyTorch predictions to assets/
 │   ├── bench_python.py      PyTorch and ONNX Runtime timings (same measurements as Go)
 │   ├── make_test_models.py  synthetic ONNX models for Go unit tests

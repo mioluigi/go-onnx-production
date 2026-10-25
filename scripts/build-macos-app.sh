@@ -37,7 +37,7 @@ clear
 log_file="$HOME/Library/Logs/PredictDigits.log"
 mkdir -p "$(dirname "$log_file")"
 echo "Checking the model against PyTorch on 10,000 test images, then timing it..."
-echo "(The first run downloads GoMLX's XLA plugin, about a minute.)"
+echo "(The first run downloads GoMLX's XLA plugin once.)"
 echo
 if ! "$(dirname "$0")/predict-digits" 2>>"$log_file"; then
   echo "The program could not finish. Details: $log_file"

@@ -36,12 +36,12 @@ early, while the Go packages are built in parallel on synthetic models.
 ## Phase 3 — The program
 - [x] **T10 🔴 End-to-end tests** for `cmd/predict-digits` (no args → PASS; CSV errors; flags; stderr logs).
 - [x] **T11 🟢 `cmd/predict-digits`** with embedded assets, backend selection, timings, CSV mode.
-- [ ] **T12 👤 XLA on the Mac.** `go run ./cmd/predict-digits -backend xla` (first run downloads the XLA plugin); confirm PASS.
+- [x] **T12 👤 XLA on the Mac.** `go run ./cmd/predict-digits -backend xla` (first run downloads the XLA plugin); confirm PASS.
 
 ## Phase 4 — Python timing and measurement
 - [x] **T13 🤖 `python/bench_python.py`** (PyTorch and ONNX Runtime; bulk, latency, load, first prediction; `--predict-only`).
 - [x] **T14 🤖 `cmd/measure` (from Week 4), `scripts/measure.sh`, `scripts/tables.sh`.**
-- [ ] **T15 👤 Run all measurements on the Mac** (Python, Go × 2 backends, Monte Carlo, profiles, whole program); commit `results/`.
+- [x] **T15 👤 Run all measurements on the Mac** (Python, Go × 2 backends, Monte Carlo, profiles, whole program); commit `results/`.
 
 ## Phase 5 — Executables
 - [x] **T16 🤖 `scripts/build.sh`, `scripts/build-macos-app.sh`** (`.exe` pure Go; `.app` Apple Silicon).
@@ -49,7 +49,7 @@ early, while the Go packages are built in parallel on synthetic models.
 
 ## Phase 6 — Documentation and submission
 - [ ] **T18 👤 AI dialogs.** Export this Claude conversation and the Gemini reviews to `docs/ai-dialogs/` (PDF).
-- [ ] **T19 🤖 README** (tables by script; concerns; recommendation; AI tools statement for Luis to confirm).
+- [x] **T19 🤖 README** (tables by script; concerns; recommendation; AI tools statement for Luis to confirm).
 - [ ] **T20 👤 Gemini review of the repository** against the rubric; triage into `docs/reviews/`.
 - [ ] **T21 👤🤖 Final acceptance** (fresh clone, every AC) **and submit** the URL in Canvas.
 

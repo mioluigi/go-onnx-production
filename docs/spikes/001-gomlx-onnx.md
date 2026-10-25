@@ -52,3 +52,24 @@ outputs := model.MustCallOnceN(backend, store, func(scope *model.Scope, inputs [
 	return onnxModel.CallGraph(scope, inputs[0].Graph(), map[string]*Node{"X": inputs[0]}, "probabilities")
 }, batch)
 ```
+
+## Addendum (2026-10-25) — PyTorch-style graphs
+
+PyTorch itself could not be installed in the spike environment (only its multi-gigabyte GPU build was
+reachable), so the two graph shapes PyTorch exports for a `Linear → ReLU → Linear → Softmax` network
+(784 → 128 → 10) were built directly with the `onnx` package, using the same weights in both, and
+checked against ONNX Runtime 1.29 on 50 random inputs.
+
+| Graph shape | Produced by | GoMLX, fusion off | GoMLX, fusion on |
+|---|---|---|---|
+| `Gemm` (transB=1) → `Relu` → `Gemm` → `Softmax` | legacy TorchScript exporter | ✅ max diff 6.0 × 10⁻⁸ | ✅ max diff 6.0 × 10⁻⁸ |
+| `MatMul` → `Add` (1-D bias) → `Relu` → … → `Softmax` | dynamo exporter (current default) | ✅ max diff 6.0 × 10⁻⁸ | ✅ max diff 6.0 × 10⁻⁸ |
+
+**Additional findings**
+
+6. **The fusion failure is specific to scikit-learn's 2-D bias shape.** PyTorch-style graphs work with fusion
+   on, so the plan can keep fusion enabled for PyTorch models and verify it by test.
+7. **Python ONNX packages can disagree with each other.** `onnx` 1.23 writes model IR version 14 by default,
+   which ONNX Runtime 1.29 refuses ("max supported IR version: 13"). Exports must set a compatible IR
+   version or opset, and versions must be pinned.
+8. **Still to confirm on Luis's Mac:** an actual `torch.onnx.export` of the trained model (task in the plan).

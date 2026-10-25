@@ -15,7 +15,7 @@ early, while the Go packages are built in parallel on synthetic models.
 ---
 
 ## Phase 0 — Setup
-- [ ] **T00 👤 Python environment on the Mac.** `.venv` with torch, torchvision, onnx, onnxruntime, onnxscript; send versions.
+- [x] **T00 👤 Python environment on the Mac.** `.venv` with torch, torchvision, onnx, onnxruntime, onnxscript; send versions.
   Done when: versions known for `requirements.txt`.
 - [x] **T01 🤖 Scaffolding.** `CLAUDE.md`, `.gitignore` (`.venv/`, `dist/`, `*.out`, MNIST download cache), `docs/decisions.md`, `go.mod`. *(GoMLX version pins are added in T08 with the first code that imports them, then `go mod tidy` on the Mac; `python/requirements.txt` is written in T03 from the Mac's installed versions.)*
   Verify: `go mod verify`.

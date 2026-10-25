@@ -1,0 +1,31 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/mioluigi/go-onnx-production/inference
+cpu: Apple M1 Max
+BenchmarkPredict/batch=1-10         	   25696	     46489 ns/op	     21510 images/s	     46489 ns/image	   14338 B/op	     107 allocs/op
+BenchmarkPredict/batch=1-10         	   26158	     46073 ns/op	     21705 images/s	     46073 ns/image	   14331 B/op	     107 allocs/op
+BenchmarkPredict/batch=1-10         	   25953	     46044 ns/op	     21718 images/s	     46044 ns/image	   14330 B/op	     107 allocs/op
+BenchmarkPredict/batch=1-10         	   25918	     46452 ns/op	     21527 images/s	     46452 ns/image	   14328 B/op	     107 allocs/op
+BenchmarkPredict/batch=1-10         	   25556	     46499 ns/op	     21506 images/s	     46499 ns/image	   14330 B/op	     107 allocs/op
+BenchmarkPredict/batch=10-10        	    4783	    248373 ns/op	     40262 images/s	     24837 ns/image	  103250 B/op	     107 allocs/op
+BenchmarkPredict/batch=10-10        	    4753	    250640 ns/op	     39898 images/s	     25064 ns/image	  103271 B/op	     107 allocs/op
+BenchmarkPredict/batch=10-10        	    4884	    246453 ns/op	     40576 images/s	     24645 ns/image	  103250 B/op	     107 allocs/op
+BenchmarkPredict/batch=10-10        	    4892	    246813 ns/op	     40516 images/s	     24681 ns/image	  103254 B/op	     107 allocs/op
+BenchmarkPredict/batch=10-10        	    4898	    247078 ns/op	     40473 images/s	     24708 ns/image	  103246 B/op	     107 allocs/op
+BenchmarkPredict/batch=100-10       	    1549	    771707 ns/op	    129583 images/s	      7717 ns/image	 1177912 B/op	     261 allocs/op
+BenchmarkPredict/batch=100-10       	    1588	    744609 ns/op	    134299 images/s	      7446 ns/image	 1180535 B/op	     261 allocs/op
+BenchmarkPredict/batch=100-10       	    1580	    748073 ns/op	    133677 images/s	      7481 ns/image	 1181730 B/op	     261 allocs/op
+BenchmarkPredict/batch=100-10       	    1588	    743129 ns/op	    134566 images/s	      7431 ns/image	 1179131 B/op	     261 allocs/op
+BenchmarkPredict/batch=100-10       	    1592	    766253 ns/op	    130505 images/s	      7663 ns/image	 1172742 B/op	     261 allocs/op
+BenchmarkPredict/batch=1000-10      	     236	   5058960 ns/op	    197669 images/s	      5059 ns/image	10383707 B/op	     444 allocs/op
+BenchmarkPredict/batch=1000-10      	     237	   5046076 ns/op	    198174 images/s	      5046 ns/image	10423923 B/op	     444 allocs/op
+BenchmarkPredict/batch=1000-10      	     237	   5026567 ns/op	    198943 images/s	      5027 ns/image	10434267 B/op	     445 allocs/op
+BenchmarkPredict/batch=1000-10      	     237	   5023065 ns/op	    199082 images/s	      5023 ns/image	10380625 B/op	     444 allocs/op
+BenchmarkPredict/batch=1000-10      	     237	   5027601 ns/op	    198902 images/s	      5028 ns/image	10362930 B/op	     444 allocs/op
+BenchmarkPredict/batch=10000-10     	      22	  46318998 ns/op	    215894 images/s	      4632 ns/image	114482581 B/op	     750 allocs/op
+BenchmarkPredict/batch=10000-10     	      25	  46105785 ns/op	    216893 images/s	      4611 ns/image	113744154 B/op	     754 allocs/op
+BenchmarkPredict/batch=10000-10     	      25	  46096060 ns/op	    216938 images/s	      4610 ns/image	112980345 B/op	     756 allocs/op
+BenchmarkPredict/batch=10000-10     	      26	  47727620 ns/op	    209522 images/s	      4773 ns/image	115874185 B/op	     764 allocs/op
+BenchmarkPredict/batch=10000-10     	      24	  46150804 ns/op	    216681 images/s	      4615 ns/image	113864791 B/op	     757 allocs/op
+PASS
+ok  	github.com/mioluigi/go-onnx-production/inference	30.396s

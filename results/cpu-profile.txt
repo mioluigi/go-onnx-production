@@ -1,0 +1,33 @@
+File: inference.test
+Type: cpu
+Time: 2026-10-25 16:05:48 EDT
+Duration: 1.23s, Total samples = 4.14s (336.40%)
+Showing nodes accounting for 4.02s, 97.10% of 4.14s total
+Dropped 59 nodes (cum <= 0.02s)
+Showing top 25 nodes out of 54
+      flat  flat%   sum%        cum   cum%
+     3.03s 73.19% 73.19%      3.11s 75.12%  github.com/gomlx/compute/internal/gobackend/dot/matmul.largeNoSIMDPanel[go.shape.float32,go.shape.float32]
+     0.24s  5.80% 78.99%      0.24s  5.80%  runtime.pthread_cond_signal
+     0.23s  5.56% 84.54%      0.23s  5.56%  runtime.pthread_cond_wait
+     0.22s  5.31% 89.86%      0.22s  5.31%  github.com/gomlx/compute/internal/gobackend/dot/matmul.unsafePackLHS[go.shape.float32]
+     0.10s  2.42% 92.27%      0.10s  2.42%  runtime.madvise
+     0.08s  1.93% 94.20%      0.08s  1.93%  runtime.asyncPreempt
+     0.06s  1.45% 95.65%      0.06s  1.45%  runtime.memmove
+     0.03s  0.72% 96.38%      0.03s  0.72%  github.com/gomlx/compute/internal/gobackend/dot/matmul.noSIMDApplyPackedOutput[go.shape.float32] (inline)
+     0.03s  0.72% 97.10%      0.03s  0.72%  github.com/mioluigi/go-onnx-production/inference.randomRows
+         0     0% 97.10%      0.15s  3.62%  _.goready.func1
+         0     0% 97.10%      3.36s 81.16%  github.com/gomlx/compute/internal/gobackend/dot/matmul.largeNoSIMDGeneric[go.shape.float32,go.shape.float32].func4
+         0     0% 97.10%      3.36s 81.16%  github.com/gomlx/compute/internal/gobackend/dot/matmul.largeNoSIMDMatrixSlice[go.shape.float32,go.shape.float32]
+         0     0% 97.10%      3.36s 81.16%  github.com/gomlx/compute/internal/gobackend/workerspool.(*Pool).Saturate.func1
+         0     0% 97.10%      3.36s 81.16%  github.com/gomlx/compute/internal/gobackend/workerspool.(*Pool).lockedRunTaskInGoroutine.func1
+         0     0% 97.10%      0.04s  0.97%  github.com/gomlx/gomlx/core/tensors.(*Tensor).MutableFlatData
+         0     0% 97.10%      0.04s  0.97%  github.com/gomlx/gomlx/core/tensors.(*Tensor).lockedMutableFlatData
+         0     0% 97.10%      0.04s  0.97%  github.com/gomlx/gomlx/core/tensors.FromFlatDataAndDimensions[go.shape.float32]
+         0     0% 97.10%      0.04s  0.97%  github.com/gomlx/gomlx/core/tensors.FromFlatDataAndDimensions[go.shape.float32].func2
+         0     0% 97.10%      0.04s  0.97%  github.com/gomlx/gomlx/core/tensors.MustMutableFlatData[go.shape.float32] (inline)
+         0     0% 97.10%      0.04s  0.97%  github.com/gomlx/gomlx/core/tensors.MutableFlatData[go.shape.float32]
+         0     0% 97.10%      0.04s  0.97%  github.com/gomlx/gomlx/core/tensors.MutableFlatData[go.shape.float32].func1
+         0     0% 97.10%      0.09s  2.17%  github.com/mioluigi/go-onnx-production/inference.(*Model).Predict
+         0     0% 97.10%      0.03s  0.72%  github.com/mioluigi/go-onnx-production/inference.(*Model).flatten
+         0     0% 97.10%      0.03s  0.72%  github.com/mioluigi/go-onnx-production/inference.BenchmarkPredict
+         0     0% 97.10%      0.09s  2.17%  github.com/mioluigi/go-onnx-production/inference.BenchmarkPredict.func1

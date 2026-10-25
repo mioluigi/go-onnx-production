@@ -1,6 +1,31 @@
---- FAIL: BenchmarkPredict
-    benchmark_test.go:29: Load: GoMLX backend unavailable: can't find backend "xla" for configuration "xla" given, backends available: "go"
-FAIL
-exit status 1
-FAIL	github.com/mioluigi/go-onnx-production/inference	0.364s
-FAIL
+goos: darwin
+goarch: arm64
+pkg: github.com/mioluigi/go-onnx-production/inference
+cpu: Apple M1 Max
+BenchmarkPredict/batch=1-10         	   30320	     40163 ns/op	     24898 images/s	     40163 ns/image	    8208 B/op	      43 allocs/op
+BenchmarkPredict/batch=1-10         	   29734	     39140 ns/op	     25549 images/s	     39140 ns/image	    8208 B/op	      43 allocs/op
+BenchmarkPredict/batch=1-10         	   30800	     38903 ns/op	     25705 images/s	     38903 ns/image	    8208 B/op	      43 allocs/op
+BenchmarkPredict/batch=1-10         	   30464	     38953 ns/op	     25672 images/s	     38953 ns/image	    8208 B/op	      43 allocs/op
+BenchmarkPredict/batch=1-10         	   31036	     38805 ns/op	     25770 images/s	     38805 ns/image	    8208 B/op	      43 allocs/op
+BenchmarkPredict/batch=10-10        	   10000	    112982 ns/op	     88509 images/s	     11298 ns/image	   67931 B/op	      43 allocs/op
+BenchmarkPredict/batch=10-10        	   10000	    117889 ns/op	     84825 images/s	     11789 ns/image	   67931 B/op	      43 allocs/op
+BenchmarkPredict/batch=10-10        	   10000	    114016 ns/op	     87707 images/s	     11402 ns/image	   67931 B/op	      43 allocs/op
+BenchmarkPredict/batch=10-10        	   10000	    114099 ns/op	     87643 images/s	     11410 ns/image	   67931 B/op	      43 allocs/op
+BenchmarkPredict/batch=10-10        	   10000	    113624 ns/op	     88009 images/s	     11362 ns/image	   67931 B/op	      43 allocs/op
+BenchmarkPredict/batch=100-10       	    3997	    286468 ns/op	    349079 images/s	      2865 ns/image	  647524 B/op	      43 allocs/op
+BenchmarkPredict/batch=100-10       	    4118	    286629 ns/op	    348883 images/s	      2866 ns/image	  647525 B/op	      43 allocs/op
+BenchmarkPredict/batch=100-10       	    4071	    304983 ns/op	    327887 images/s	      3050 ns/image	  647524 B/op	      43 allocs/op
+BenchmarkPredict/batch=100-10       	    4243	    282784 ns/op	    353626 images/s	      2828 ns/image	  647525 B/op	      43 allocs/op
+BenchmarkPredict/batch=100-10       	    4160	    282626 ns/op	    353824 images/s	      2826 ns/image	  647523 B/op	      43 allocs/op
+BenchmarkPredict/batch=1000-10      	     610	   1903986 ns/op	    525214 images/s	      1904 ns/image	 6342587 B/op	      43 allocs/op
+BenchmarkPredict/batch=1000-10      	     634	   1873300 ns/op	    533817 images/s	      1873 ns/image	 6342588 B/op	      43 allocs/op
+BenchmarkPredict/batch=1000-10      	     642	   1977280 ns/op	    505745 images/s	      1977 ns/image	 6342592 B/op	      43 allocs/op
+BenchmarkPredict/batch=1000-10      	     627	   1878371 ns/op	    532376 images/s	      1878 ns/image	 6342584 B/op	      43 allocs/op
+BenchmarkPredict/batch=1000-10      	     634	   1871972 ns/op	    534196 images/s	      1872 ns/image	 6342597 B/op	      43 allocs/op
+BenchmarkPredict/batch=10000-10     	      69	  15178093 ns/op	    658844 images/s	      1518 ns/image	63384093 B/op	      45 allocs/op
+BenchmarkPredict/batch=10000-10     	      81	  14918888 ns/op	    670291 images/s	      1492 ns/image	63384085 B/op	      45 allocs/op
+BenchmarkPredict/batch=10000-10     	      79	  14909212 ns/op	    670726 images/s	      1491 ns/image	63384051 B/op	      44 allocs/op
+BenchmarkPredict/batch=10000-10     	      73	  14855969 ns/op	    673130 images/s	      1486 ns/image	63384084 B/op	      45 allocs/op
+BenchmarkPredict/batch=10000-10     	      81	  14758949 ns/op	    677555 images/s	      1476 ns/image	63384077 B/op	      45 allocs/op
+PASS
+ok  	github.com/mioluigi/go-onnx-production/inference	30.135s

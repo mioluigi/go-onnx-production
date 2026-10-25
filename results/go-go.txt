@@ -1,0 +1,16 @@
+MNIST digit classifier: PyTorch model run in Go with GoMLX
+Model:    built-in mnist_mlp.onnx (784 inputs, 10 classes)
+Backend:  go
+Test set: 10,000 MNIST test images
+
+Accuracy: 97.11 % (9,711 of 10,000 correct)
+Parity with PyTorch: PASS: labels 10000/10000 identical, largest probability difference 1.37e-06 (tolerance 1e-05), 0 rows with NaN or infinity
+
+Timings (go backend)
+  Load model                 0.53 ms
+  First prediction           2.67 ms   one image, includes compiling the graph
+  10,000 images              47.22 ms   one call, median of 20 runs (4.72 µs per image)
+  One image, median          46.6 µs   1000 calls after 20 warm-up calls
+  One image, 95th pct        50.0 µs
+
+benchmark language=go runtime=gomlx-go load_ms=0.53 first_ms=2.67 bulk_ms=47.22 latency_p50_us=46.6 latency_p95_us=50.0 bulk_runs=20 latency_calls=1000

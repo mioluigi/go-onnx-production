@@ -1,0 +1,32 @@
+File: inference.test
+Type: alloc_space
+Time: 2026-10-25 16:05:49 EDT
+Showing nodes accounting for 2329.58MB, 98.87% of 2356.21MB total
+Dropped 89 nodes (cum <= 11.78MB)
+Showing top 25 nodes out of 41
+      flat  flat%   sum%        cum   cum%
+ 1033.70MB 43.87% 43.87%  1033.70MB 43.87%  github.com/gomlx/compute/internal/gobackend.(*Backend).GetBuffer
+  628.20MB 26.66% 70.53%   628.20MB 26.66%  github.com/gomlx/compute/dtypes.MakeAnySlice
+  628.20MB 26.66% 97.19%   628.20MB 26.66%  github.com/mioluigi/go-onnx-production/inference.(*Model).flatten
+   35.11MB  1.49% 98.68%    35.11MB  1.49%  github.com/mioluigi/go-onnx-production/inference.randomRows
+    4.38MB  0.19% 98.87%    12.97MB  0.55%  github.com/mioluigi/go-onnx-production/inference.(*Model).probabilityRows
+         0     0% 98.87%      672MB 28.52%  github.com/gomlx/compute/internal/gobackend.(*Backend).NewBuffer (inline)
+         0     0% 98.87%      672MB 28.52%  github.com/gomlx/compute/internal/gobackend.(*Backend).NewSharedBuffer
+         0     0% 98.87%   351.80MB 14.93%  github.com/gomlx/compute/internal/gobackend.(*Executable).Execute
+         0     0% 98.87%   351.80MB 14.93%  github.com/gomlx/compute/internal/gobackend.(*FunctionExecutable).Execute
+         0     0% 98.87%   352.30MB 14.95%  github.com/gomlx/compute/internal/gobackend.(*FunctionExecutable).executeNode
+         0     0% 98.87%   351.80MB 14.93%  github.com/gomlx/compute/internal/gobackend.(*FunctionExecutable).executeParallel
+         0     0% 98.87%   352.30MB 14.95%  github.com/gomlx/compute/internal/gobackend.(*FunctionExecutable).runExecutor
+         0     0% 98.87%   162.15MB  6.88%  github.com/gomlx/compute/internal/gobackend/dot.execDotGeneral
+         0     0% 98.87%    19.08MB  0.81%  github.com/gomlx/compute/internal/gobackend/dot/matmul.GetBuffer[go.shape.float32]
+         0     0% 98.87%    18.29MB  0.78%  github.com/gomlx/compute/internal/gobackend/dot/matmul.largeNoSIMDGeneric[go.shape.float32,go.shape.float32].func4
+         0     0% 98.87%   180.15MB  7.65%  github.com/gomlx/compute/internal/gobackend/fusedops.execFusedActivation
+         0     0% 98.87%    18.29MB  0.78%  github.com/gomlx/compute/internal/gobackend/workerspool.(*Pool).Saturate.func1
+         0     0% 98.87%    18.79MB   0.8%  github.com/gomlx/compute/internal/gobackend/workerspool.(*Pool).lockedRunTaskInGoroutine.func1
+         0     0% 98.87%  1025.09MB 43.51%  github.com/gomlx/gomlx/core/graph.(*Exec).CallWithGraph
+         0     0% 98.87%  1025.09MB 43.51%  github.com/gomlx/gomlx/core/graph.(*Exec).CallWithGraphOnDevice
+         0     0% 98.87%  1025.09MB 43.51%  github.com/gomlx/gomlx/core/graph.(*Exec).ExecWithGraphOnDevice (inline)
+         0     0% 98.87%  1025.09MB 43.51%  github.com/gomlx/gomlx/core/graph.(*Exec).compileAndExecute
+         0     0% 98.87%   351.80MB 14.93%  github.com/gomlx/gomlx/core/graph.(*Exec).compileAndExecute.func1
+         0     0% 98.87%      672MB 28.52%  github.com/gomlx/gomlx/core/graph.(*Exec).convertArgsToBuffers
+         0     0% 98.87%      672MB 28.52%  github.com/gomlx/gomlx/core/graph.(*Exec).convertArgsToBuffers.func1

@@ -1,0 +1,4 @@
+wholeprogram language=go-xla runs=5 median_wall_ms=158.34 median_maxrss_mb=267.4
+wholeprogram language=go-go runs=5 median_wall_ms=112.55 median_maxrss_mb=154.0
+wholeprogram language=python-pytorch runs=5 median_wall_ms=1473.89 median_maxrss_mb=252.9
+wholeprogram language=python-onnxruntime runs=5 median_wall_ms=185.10 median_maxrss_mb=102.0

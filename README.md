@@ -27,8 +27,9 @@ predictions faster. See [Recommendation](#recommendation-to-management).
 > choose Go for its operational benefits, not for prediction speed.**
 
 1. **Correctness is not a barrier.** The PyTorch model, exported to ONNX and run in Go, predicted the same
-   digit as PyTorch for all 10,000 MNIST test images, with every probability within 1.4 × 10⁻⁶ of
-   PyTorch's, on both GoMLX backends. Accuracy is identical (97.11 %). The check is automated in this
+   digit as PyTorch for all 10,000 MNIST test images. On both GoMLX backends every Go probability was
+   within 1.4 × 10⁻⁶ of PyTorch's (ONNX Runtime, for comparison, within 1.5 × 10⁻⁶). Accuracy is
+   identical (97.11 %). The check is automated in this
    repository and can gate every model release.
 2. **Prediction speed favors Python's runtimes.** These are C++ engines tuned for exactly this work. For
    10,000 images in one call, GoMLX with its XLA backend took about 4 times as long as PyTorch, and its
@@ -221,11 +222,18 @@ GOMLX_BACKEND=xla go test -run='^$' -bench=Predict -benchmem ./inference/  # the
 |---|---|---:|
 | `idx` | Reading MNIST's IDX format: official headers, gzip and plain files, truncated or damaged data, unsupported types, size limits | 96.7 % |
 | `parity` | Comparing predictions: identical inputs, differences just inside and outside the tolerance, label disagreements, NaN and infinity | 100 % |
-| `inference` | Small synthetic ONNX models with known answers (softmax, a model that always picks one class, a two-layer network checked against ONNX Runtime, a scikit-learn-style bias), invalid models, invalid inputs, NaN outputs, closing twice | 92.1 % |
-| `cmd/predict-digits` | The built program, run as a user would: no arguments, parity on all 10,000 images, CSV input and each kind of input error, invalid models, a model that fails parity, command-line mistakes, help; plus the input contract and percentile calculation | end to end ¹ |
+| `inference` | Small synthetic ONNX models with known answers (softmax, a model that always picks one class, a two-layer network checked against ONNX Runtime, a scikit-learn-style bias), invalid models, invalid inputs, NaN outputs, closing twice | 91.8 % |
+| `cmd/predict-digits` | The built program, run as a user would: no arguments, parity on all 10,000 images, CSV input and each kind of input error, invalid models, a model that fails parity, command-line mistakes, help; plus the input contract and percentile calculation | 91.6 % ¹ |
 | `cmd/measure` | The whole-program measuring tool (from the Week 4 project) | 93.0 % |
 
-¹ These tests run the compiled program in a separate process, which Go's coverage tool does not count.
+¹ These tests run the compiled program in a separate process, which `go test -cover` cannot see. Their
+coverage is measured by building the program with `-cover` and collecting each run's coverage
+(Go's `GOCOVERDIR` mechanism):
+
+```bash
+mkdir -p /tmp/e2e-cover && PREDICT_DIGITS_COVERDIR=/tmp/e2e-cover go test -count=1 ./cmd/predict-digits/
+go tool covdata percent -i /tmp/e2e-cover
+```
 
 **Tests were written before the code** they test, and important tests were checked by deliberately breaking
 the code to confirm a test fails (for example: dividing pixels by 256 instead of 255, ignoring a parity
@@ -319,7 +327,8 @@ before code, and every result is backed by a file in the repository.
 plan, code and tests under the author's direction; Gemini (Google, on the web) reviewed the specification
 and the repository independently; the author approved every document, ran the training and all
 measurements on his own Mac, and reviewed every change. The dialogs are in
-[`docs/ai-dialogs/`](docs/ai-dialogs/). **Service tiers:** ⚠️ TO CONFIRM BY THE AUTHOR BEFORE SUBMISSION.
+[`docs/ai-dialogs/`](docs/ai-dialogs/). **Service tiers:** the assignment suggests free versions of AI tools;
+the author used the subscriptions he already holds, **Claude Pro** (Anthropic) and **Gemini Ultra** (Google).
 
 ---
 

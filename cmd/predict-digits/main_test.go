@@ -21,6 +21,12 @@ import (
 // tests, so they exercise exactly what a user runs, including exit codes.
 var binaryPath string
 
+// coverDirVariable names a directory for coverage of the end-to-end runs. Go's
+// "go test -cover" cannot see code running in a separate process, so when this
+// variable is set the program is built with -cover and each run writes its
+// coverage there (Go's GOCOVERDIR mechanism); "go tool covdata percent" reads it.
+const coverDirVariable = "PREDICT_DIGITS_COVERDIR"
+
 func TestMain(m *testing.M) {
 	buildDir, err := os.MkdirTemp("", "predict-digits-test")
 	if err != nil {
@@ -28,7 +34,12 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 	binaryPath = filepath.Join(buildDir, "predict-digits")
-	build := exec.Command("go", "build", "-o", binaryPath, ".")
+	buildArgs := []string{"build", "-o", binaryPath}
+	if coverDir := os.Getenv(coverDirVariable); coverDir != "" {
+		buildArgs = append(buildArgs, "-cover")
+		os.Setenv("GOCOVERDIR", coverDir) // inherited by every run of the program
+	}
+	build := exec.Command("go", append(buildArgs, ".")...)
 	if output, err := build.CombinedOutput(); err != nil {
 		fmt.Fprintf(os.Stderr, "building program: %v\n%s", err, output)
 		os.RemoveAll(buildDir)

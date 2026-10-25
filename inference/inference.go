@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"slices"
 	"strings"
 	"sync"
 
@@ -209,10 +210,22 @@ func outputClasses(onnxModel onnx.Model, outputName string) (int, error) {
 	return 0, fmt.Errorf("%w: %q (the model's outputs are %v)", ErrMissingOutput, outputName, names)
 }
 
-// newBackend creates the GoMLX backend named by config. compute.NewWithConfig
-// declares an error result but panics on an unknown backend name (found by
-// TestLoadRejectsUnsuitableModels), so the panic is converted to an error here.
+// newBackend creates the GoMLX backend named by config, or by $GOMLX_BACKEND
+// when config is empty. compute.NewWithConfig declares an error result but
+// panics on an unknown backend name (found by TestLoadRejectsUnsuitableModels),
+// so the name is checked against the compiled-in backends first. The recover
+// remains as a backstop for panics inside a backend's own constructor, so a
+// program using this package never crashes while loading a model.
 func newBackend(config string) (backend compute.Backend, err error) {
+	requested := config
+	if requested == "" {
+		requested = os.Getenv(compute.ConfigEnvVar)
+	}
+	if name, _, _ := strings.Cut(requested, ":"); name != "" && !slices.Contains(compute.List(), name) {
+		available := compute.List()
+		slices.Sort(available)
+		return nil, fmt.Errorf("%w: %q is not in this build (available: %s)", ErrBackend, name, strings.Join(available, ", "))
+	}
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			backend, err = nil, fmt.Errorf("%w: %s", ErrBackend, firstLine(fmt.Errorf("%v", recovered)))

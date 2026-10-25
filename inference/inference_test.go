@@ -83,6 +83,13 @@ func TestLoadDescribesTheModel(t *testing.T) {
 	if m.NumFeatures() != 8 || m.NumClasses() != 4 {
 		t.Errorf("NumFeatures, NumClasses = %d, %d; want 8, 4", m.NumFeatures(), m.NumClasses())
 	}
+	if got := loadTestModel(t, "two_layer.onnx", Options{Backend: "go"}).BackendName(); got != "go" {
+		t.Errorf("BackendName() = %q, want %q", got, "go")
+	}
+	t.Setenv("GOMLX_BACKEND", "go")
+	if got := loadTestModel(t, "two_layer.onnx", Options{}).BackendName(); got != "go" {
+		t.Errorf("with GOMLX_BACKEND=go: BackendName() = %q, want %q", got, "go")
+	}
 }
 
 func TestPredictKnownAnswers(t *testing.T) {

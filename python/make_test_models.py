@@ -10,6 +10,7 @@ Each model exercises one behavior the Go `inference` package must handle:
   two_inputs.onnx           a model with two inputs, which the package does not support
   unsupported_op.onnx       uses ArrayFeatureExtractor, an operation GoMLX does not implement
   sqrt_output.onnx          outputs the square root of its input, so a negative input yields NaN
+  always_zero_784.onnx      MNIST-shaped (784 -> 10) but always predicts 0: a parity FAIL for cmd/predict-digits
 
 Usage, from the repository root:  python python/make_test_models.py
 """
@@ -102,6 +103,10 @@ def main():
     nodes = [helper.make_node("Sqrt", ["input"], ["probabilities"])]
     save("sqrt_output.onnx", nodes, [tensor_input("input", 2)],
          [helper.make_tensor_value_info("probabilities", TensorProto.FLOAT, ["batch", 2])], [])
+
+    bias = np.zeros(10, np.float32)
+    bias[0] = 5
+    dense_softmax("always_zero_784.onnx", np.zeros((784, 10), np.float32), bias, 784, 10)
 
     for path in sorted(OUT.iterdir()):
         print(f"{path.name:40s} {path.stat().st_size:6d} bytes")

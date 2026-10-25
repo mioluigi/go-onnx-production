@@ -231,6 +231,25 @@ func TestInvalidModel(t *testing.T) {
 	}
 }
 
+// TestParityFailure: a model that disagrees with PyTorch is reported as FAIL,
+// exits 1, and gets no timings (Constitution 1: parity before speed).
+func TestParityFailure(t *testing.T) {
+	result := runProgram(t, "-model", "../../inference/testdata/always_zero_784.onnx", "-backend", "go")
+	if result.exitCode != exitDataError || !strings.Contains(result.stdout, "Parity with PyTorch: FAIL") ||
+		benchmarkFields(t, result.stdout) != nil || !strings.Contains(result.stderr, "do not match") {
+		t.Errorf("want FAIL, exit code %d, no timings\n%s", exitDataError, result)
+	}
+}
+
+// TestChosenBackendUnavailable: a backend named with -backend that cannot start
+// is an error (exit 1), never a silent fallback.
+func TestChosenBackendUnavailable(t *testing.T) {
+	result := runProgram(t, "-backend", "xla:no-such-plugin", "-runs", "0")
+	if result.exitCode != exitDataError || !strings.Contains(result.stderr, "backend unavailable") || result.stdout != "" {
+		t.Errorf("want exit code %d and %q on stderr\n%s", exitDataError, "backend unavailable", result)
+	}
+}
+
 func TestCommandLineMistakes(t *testing.T) {
 	for _, args := range [][]string{
 		{"-no-such-flag"},

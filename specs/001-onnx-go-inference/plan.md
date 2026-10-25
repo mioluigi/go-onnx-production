@@ -109,7 +109,7 @@ func (m *Model) Close()
    NaN/Inf. Library panics are recovered at the package boundary and returned as wrapped errors
    (Constitution 2.7).
 
-**Backend selection:** `Options.Backend` (`"xla"` or `"go"`; empty means the best available), passed to
+**Backend selection:** `Options.Backend` (`"xla"` or `"go"`; empty means GoMLX's default; changed in T11, see decisions), passed to
 GoMLX's backend configuration. The program exposes it as `-backend`.
 
 ## 5. Packages `idx` and `parity`
@@ -127,7 +127,8 @@ GoMLX's backend configuration. The program exposes it as `-backend`.
 predict-digits                         parity check + timings on the built-in model and test set
 predict-digits -input digits.csv       predict a user's images (CSV: 784 pixel values 0–255 per row)
 predict-digits -model other.onnx       use another ONNX classifier (parity check needs matching data)
-predict-digits -backend go|xla         choose the GoMLX backend
+predict-digits -backend go|xla         choose the GoMLX backend (default xla where built in, falling back
+                                       to go if XLA cannot start; go in builds without CGo)
 predict-digits -runs 1000              number of timed repetitions (0 = skip timings)
 predict-digits -verbose                debug logs
 ```

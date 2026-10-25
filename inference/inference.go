@@ -16,6 +16,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"os"
 	"strings"
 	"sync"
 
@@ -62,6 +63,7 @@ type Model struct {
 	closed      bool
 	onnxModel   onnx.Model
 	backend     compute.Backend
+	backendName string
 	executor    *model.Exec
 	numFeatures int
 	numClasses  int
@@ -88,6 +90,9 @@ func (m *Model) NumFeatures() int { return m.numFeatures }
 
 // NumClasses is the number of probabilities in each output row.
 func (m *Model) NumClasses() int { return m.numClasses }
+
+// BackendName is the name the GoMLX backend was chosen by, such as "go" or "xla".
+func (m *Model) BackendName() string { return m.backendName }
 
 // Predict returns one row of class probabilities for each input row.
 func (m *Model) Predict(inputs [][]float32) ([][]float32, error) {
@@ -170,8 +175,8 @@ func prepare(onnxModel onnx.Model, opts Options) (*Model, error) {
 		backend.Finalize()
 		return nil, fmt.Errorf("%w: %s", ErrRun, firstLine(err))
 	}
-	return &Model{onnxModel: onnxModel, backend: backend, executor: executor,
-		numFeatures: numFeatures, numClasses: numClasses}, nil
+	return &Model{onnxModel: onnxModel, backend: backend, backendName: chosenName(opts.Backend, backend),
+		executor: executor, numFeatures: numFeatures, numClasses: numClasses}, nil
 }
 
 // singleInput returns the name and feature count of the model's only input,
@@ -222,6 +227,20 @@ func newBackend(config string) (backend compute.Backend, err error) {
 		return nil, fmt.Errorf("%w: %q: %s", ErrBackend, config, firstLine(err))
 	}
 	return backend, nil
+}
+
+// chosenName returns the registered name of the backend ("go", "xla"), from the
+// configuration or $GOMLX_BACKEND. Backend.Name is only a fallback: the pure-Go
+// backend's Name returns "Go Backend", not its registered name "go" (found by
+// TestLoadDescribesTheModel).
+func chosenName(config string, backend compute.Backend) string {
+	if config == "" {
+		config = os.Getenv(compute.ConfigEnvVar)
+	}
+	if name, _, _ := strings.Cut(config, ":"); name != "" {
+		return name
+	}
+	return backend.Name()
 }
 
 // flatten checks the batch and copies it into one contiguous slice, the layout

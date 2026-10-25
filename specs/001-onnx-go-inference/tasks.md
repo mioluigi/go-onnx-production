@@ -35,7 +35,7 @@ early, while the Go packages are built in parallel on synthetic models.
 
 ## Phase 3 — The program
 - [x] **T10 🔴 End-to-end tests** for `cmd/predict-digits` (no args → PASS; CSV errors; flags; stderr logs).
-- [ ] **T11 🟢 `cmd/predict-digits`** with embedded assets, backend selection, timings, CSV mode.
+- [x] **T11 🟢 `cmd/predict-digits`** with embedded assets, backend selection, timings, CSV mode.
 - [ ] **T12 👤 XLA on the Mac.** `go run ./cmd/predict-digits -backend xla` (first run downloads the XLA plugin); confirm PASS.
 
 ## Phase 4 — Python timing and measurement

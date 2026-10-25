@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **DRAFT v1 — awaiting Gemini review and Luis's answers to section 11** |
+| Status | **DRAFT v2 — Gemini review incorporated (`docs/reviews/001-spec-review.md`); awaiting Luis's answers to section 11** |
 | Owner | Luis Varela |
 | Course deliverable | Week 5 Assignment: Go for ML/AI Production (100 pts) |
 | Governing rules | `docs/constitution.md` · requirements: `docs/assignment-and-rubric.md` |
@@ -45,13 +45,14 @@ in the ways that matter for many users — per-request response time, bulk throu
 | FR-1 | A Python program trains the model (framework: Q1; model and data: Q2), saves the **`.onnx` model**, the **test set**, and **Python's predictions** on it as versioned files. |
 | FR-2 | The test set is **large**: at least 10,000 examples (Q2). |
 | FR-3 | A reusable Go package loads the `.onnx` file with **GoMLX** (onnx-gomlx) and returns class **probabilities** and **predicted labels** for a batch of inputs. |
-| FR-4 | **Parity check:** Go's predictions are compared with Python's on the **entire** test set: label agreement and largest probability difference, against the tolerance in Q5. Reported by a program, not by hand. |
+| FR-3a | **Input contract:** the model's expected input (shape, data type, scaling) is written down once and applied identically in Python and Go, and is tested. For the recommended MNIST model: each image flattened to 784 values, `float32`, pixel ÷ 255. |
+| FR-4 | **Parity check:** Go's predictions are compared with Python's on the **entire** test set: label agreement and largest probability difference, against the tolerance in Q5. Any NaN or infinite probability fails the check. Reported by a program, not by hand. |
 | FR-5 | **Python timing:** bulk prediction on the full test set, and single-example latency (median and 95th percentile), from repeated runs after warm-up. |
 | FR-6 | **Go timing:** the same two measurements on the same machine, for each GoMLX backend chosen in Q3. |
-| FR-7 | **Start-up cost** is reported separately: loading the model and preparing it to run (GoMLX compiles a graph on first use; this matters for production start-up and autoscaling). |
-| FR-8 | **Monte Carlo benchmark:** Go inference time and memory for batch sizes from 1 to 10,000, on synthetic random inputs with a fixed seed. |
+| FR-7 | **Start-up cost** is reported in three separately timed stages: (a) parse the file and load weights, (b) the **first** prediction, which includes GoMLX compiling the graph, and (c) later predictions (steady state). Production start-up and autoscaling depend on (a) + (b). |
+| FR-8 | **Monte Carlo benchmark:** Go inference time and memory for batch sizes from 1 to 10,000, on synthetic random inputs with a fixed seed, implemented with `go test -bench` (`testing.B`, allocations reported). |
 | FR-9 | **Logging:** timestamped `log/slog` logs to standard error; `-verbose` shows detail. |
-| FR-10 | **Whole-program metrics:** wall time and peak memory for the complete Python and Go programs (reusing the Week 4 measurement approach). |
+| FR-10 | **Whole-program metrics:** wall time and peak memory (maximum resident set size) for the complete Python and Go programs, measured the **same way for both** by one tool that reads the operating system's per-process report (the Week 4 `cmd/measure` approach). |
 | FR-11 | The program runs with **no arguments** on the bundled model and test set; optional flags select another model file or a CSV of inputs. |
 | FR-12 | **Invalid input** produces a clear message and a non-zero exit code: missing file, not a valid ONNX model, a model without the expected input or `probabilities` output, CSV with the wrong number of features, non-numeric or non-finite values, empty input. |
 | FR-13 | The README contains: purpose, roles of programs and data, build/run/test/benchmark instructions, parity and timing results, concerns, and the **recommendation to management**. |
@@ -74,11 +75,12 @@ a layer whose weights make the output equal a known transformation of the input)
 
 1. **GoMLX v0.28 requires Go ≥ 1.27.**
 2. **Operation fusion breaks on scikit-learn exports** (2-D bias shape) and must be disabled there with `DisableFusion()`; PyTorch-style exports work with fusion on (spike addendum).
-6. **Python ONNX tools can disagree:** the newest `onnx` writes a file version the newest ONNX Runtime rejects; exports must pin a compatible version.
 3. **Classic-ML ONNX operations are unsupported** (e.g. `ArrayFeatureExtractor`); Go must request the
    neural network's `probabilities` output and compute the label itself.
 4. **The library's README example is out of date;** pin versions and rely on tested code.
 5. **Backends differ:** XLA (fast; macOS/Linux) vs. pure Go (portable; the only choice for Windows).
+6. **Python ONNX tools can disagree:** the newest `onnx` writes a file version the newest ONNX Runtime rejects; exports must pin a compatible version.
+7. **The XLA backend needs CGo** (C code), so it cannot be cross-compiled: a Windows `.exe` must use the pure-Go backend, and an XLA build must be made on the Mac itself (verified 2026-10-25).
 
 Each is also a point for the recommendation: the path works, but it needs engineering care.
 
@@ -88,11 +90,12 @@ Each is also a point for the recommendation: the path works, but it needs engine
 |---|---|---|
 | NFR-1 | Code follows Constitution Article 2. | Coding |
 | NFR-2 | Test coverage of the reusable Go packages ≥ 90 %. | Testing |
-| NFR-3 | CPU and memory profiles of Go inference generated and kept. | Testing |
+| NFR-3 | CPU and memory profiles of Go inference generated with `go test -cpuprofile/-memprofile`, and their `go tool pprof` text summaries kept in `results/`. | Testing |
 | NFR-4 | Inference logic is a reusable package, independent of the program's input/output. | Design |
 | NFR-5 | From `git clone` to results in ≤ 5 documented commands; Python retraining is optional, not required. | Documentation / Application |
 | NFR-6 | Every file in the repository is under 50 MB (GitHub warns above that). | Documentation |
 | NFR-7 | Dependency versions pinned in Go and Python. | Design |
+| NFR-8 | README result tables are produced by scripts from files in `results/`, never typed by hand. | Documentation |
 
 ## 8. Acceptance criteria (definition of done)
 
@@ -103,7 +106,7 @@ Each is also a point for the recommendation: the path works, but it needs engine
 - [ ] AC-5 CPU and memory profiles are saved and summarized.
 - [ ] AC-6 Whole-program wall time and peak memory are reported for Python and Go.
 - [ ] AC-7 The executable runs with no arguments; each FR-12 case has a test and a clear message.
-- [ ] AC-8 Build commands produce a macOS binary, a Windows `.exe`, and a macOS `.app` (Q8).
+- [ ] AC-8 Build commands produce a macOS binary (XLA and pure-Go backends), a Windows `.exe` (pure-Go backend only; XLA needs CGo and is unavailable for Windows), and a macOS `.app` (Q8). All performance figures come from the Mac; the `.exe` demonstrates portability and is not benchmarked.
 - [ ] AC-9 README contains every FR-13 item, with tables generated from `results/`.
 - [ ] AC-10 AI dialog files are in the repository (FR-14).
 - [ ] AC-11 Repository URL submitted in Canvas.
@@ -113,9 +116,9 @@ Each is also a point for the recommendation: the path works, but it needs engine
 | Rubric criterion (20 pts each) | Satisfied by |
 |---|---|
 | Coding rules, organization, aesthetics | NFR-1, Constitution Art. 2 |
-| Testing and software metrics | FR-4–FR-10, NFR-2, NFR-3, AC-1–AC-6 |
+| Testing and software metrics | FR-3a, FR-4–FR-10, NFR-2, NFR-3, AC-1–AC-6 |
 | Design and development | FR-1, FR-3, NFR-4, NFR-7 |
-| Documentation | FR-13, FR-14, NFR-5, NFR-6, AC-9, AC-10 |
+| Documentation | FR-13, FR-14, NFR-5, NFR-6, NFR-8, AC-9, AC-10 |
 | Application | FR-11, FR-12, AC-7, AC-8 |
 
 ## 10. Out of scope

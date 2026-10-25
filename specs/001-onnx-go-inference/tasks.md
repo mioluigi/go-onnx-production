@@ -44,7 +44,7 @@ early, while the Go packages are built in parallel on synthetic models.
 - [ ] **T15 👤 Run all measurements on the Mac** (Python, Go × 2 backends, Monte Carlo, profiles, whole program); commit `results/`.
 
 ## Phase 5 — Executables
-- [ ] **T16 🤖 `scripts/build.sh`, `scripts/build-macos-app.sh`** (`.exe` pure Go; `.app` Apple Silicon).
+- [x] **T16 🤖 `scripts/build.sh`, `scripts/build-macos-app.sh`** (`.exe` pure Go; `.app` Apple Silicon).
 - [ ] **T17 👤 Build all three; open the `.app`.**
 
 ## Phase 6 — Documentation and submission

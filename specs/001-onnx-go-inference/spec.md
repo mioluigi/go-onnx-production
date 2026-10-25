@@ -73,7 +73,8 @@ a layer whose weights make the output equal a known transformation of the input)
 ## 6. Key findings that shape the plan ⚠️ (from Spike 001)
 
 1. **GoMLX v0.28 requires Go ≥ 1.27.**
-2. **Operation fusion must be disabled** (`DisableFusion()`), or exported bias shapes break loading.
+2. **Operation fusion breaks on scikit-learn exports** (2-D bias shape) and must be disabled there with `DisableFusion()`; PyTorch-style exports work with fusion on (spike addendum).
+6. **Python ONNX tools can disagree:** the newest `onnx` writes a file version the newest ONNX Runtime rejects; exports must pin a compatible version.
 3. **Classic-ML ONNX operations are unsupported** (e.g. `ArrayFeatureExtractor`); Go must request the
    neural network's `probabilities` output and compute the label itself.
 4. **The library's README example is out of date;** pin versions and rely on tested code.
@@ -127,7 +128,7 @@ Each is also a point for the recommendation: the path works, but it needs engine
 
 | # | Question | Recommendation |
 |---|---|---|
-| Q1 | Python framework: PyTorch, scikit-learn, or Keras? | **PyTorch.** Management asked about *deep learning*; PyTorch is the most common choice and exports the plain operations GoMLX handles. scikit-learn is the fallback (already proven by the spike). Keras needs an extra converter (tf2onnx). |
+| Q1 | Python framework: PyTorch, scikit-learn, or Keras? | **PyTorch.** Management asked about *deep learning*; PyTorch is the most common choice, and both of its export styles ran correctly in GoMLX in the spike addendum. scikit-learn is the fallback (already proven by the spike). Keras needs an extra converter (tf2onnx). |
 | Q2 | Model and data? | **MNIST handwritten digits with a small multilayer network** (784 → 128 → 64 → 10): a real, widely known deep learning benchmark with a standard **10,000-image test set** (FR-2). A small convolutional network is a stretch goal once the core works. |
 | Q3 | Which GoMLX backends to measure? | **Both:** XLA (fastest, macOS) and pure Go (portable, used for the Windows `.exe`). |
 | Q4 | Also time **ONNX Runtime in Python**? | **Yes.** It separates "Go vs. Python" from "PyTorch vs. a lean runtime", which management needs to make a fair decision. |

@@ -6,9 +6,21 @@ import (
 	"os"
 	"testing"
 
+	"github.com/gomlx/compute"
 	"github.com/mioluigi/go-onnx-production/idx"
 	"github.com/mioluigi/go-onnx-production/parity"
 )
+
+// TestMain runs the tests on the pure-Go backend unless $GOMLX_BACKEND names
+// another. Test builds on macOS and Linux also link XLA (xla_test.go, for the
+// benchmarks), which would otherwise become GoMLX's default and make every unit
+// test depend on downloading XLA's plugin.
+func TestMain(m *testing.M) {
+	if os.Getenv(compute.ConfigEnvVar) == "" {
+		os.Setenv(compute.ConfigEnvVar, "go")
+	}
+	os.Exit(m.Run())
+}
 
 // exactTolerance is for answers computed exactly in the test; float32 arithmetic
 // in the model leaves differences around 1e-7.

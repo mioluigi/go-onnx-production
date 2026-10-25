@@ -37,6 +37,7 @@ if ! python -c "import torch, onnxruntime" 2>/dev/null; then
 fi
 
 step() { echo "measure.sh: $*" >&2; }
+trap 'echo "measure.sh: STOPPED because the step above failed; results/ is incomplete, so do not run tables.sh" >&2' ERR
 
 mkdir -p results dist
 machine="$(uname -sm)"

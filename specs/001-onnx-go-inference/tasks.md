@@ -50,7 +50,7 @@ early, while the Go packages are built in parallel on synthetic models.
 ## Phase 6 — Documentation and submission
 - [ ] **T18 👤 AI dialogs.** Export this Claude conversation and the Gemini reviews to `docs/ai-dialogs/` (PDF).
 - [x] **T19 🤖 README** (tables by script; concerns; recommendation; AI tools statement for Luis to confirm).
-- [ ] **T20 👤 Gemini review of the repository** against the rubric; triage into `docs/reviews/`.
+- [x] **T20 👤 Gemini review of the repository** against the rubric; triage into `docs/reviews/`.
 - [ ] **T21 👤🤖 Final acceptance** (fresh clone, every AC) **and submit** the URL in Canvas.
 
 **Stretch (only if time remains):** small CNN model; concurrent-request throughput.

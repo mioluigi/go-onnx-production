@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **DRAFT v2 — Gemini review incorporated (`docs/reviews/001-spec-review.md`); awaiting Luis's answers to section 11** |
+| Status | **APPROVED v2 — 2026-10-25** (review: `docs/reviews/001-spec-review.md`; decisions: section 11) |
 | Owner | Luis Varela |
 | Course deliverable | Week 5 Assignment: Go for ML/AI Production (100 pts) |
 | Governing rules | `docs/constitution.md` · requirements: `docs/assignment-and-rubric.md` |
@@ -127,15 +127,15 @@ Each is also a point for the recommendation: the path works, but it needs engine
 - A network service (HTTP/gRPC). Latency per request is measured directly; a server is a possible next step named in the recommendation.
 - GPU execution (CPU only, on Luis's Mac).
 
-## 11. Open questions — **Luis decides before the plan step**
+## 11. Decisions — **approved by Luis, 2026-10-25**
 
-| # | Question | Recommendation |
+| # | Question | Decision |
 |---|---|---|
-| Q1 | Python framework: PyTorch, scikit-learn, or Keras? | **PyTorch.** Management asked about *deep learning*; PyTorch is the most common choice, and both of its export styles ran correctly in GoMLX in the spike addendum. scikit-learn is the fallback (already proven by the spike). Keras needs an extra converter (tf2onnx). |
-| Q2 | Model and data? | **MNIST handwritten digits with a small multilayer network** (784 → 128 → 64 → 10): a real, widely known deep learning benchmark with a standard **10,000-image test set** (FR-2). A small convolutional network is a stretch goal once the core works. |
-| Q3 | Which GoMLX backends to measure? | **Both:** XLA (fastest, macOS) and pure Go (portable, used for the Windows `.exe`). |
-| Q4 | Also time **ONNX Runtime in Python**? | **Yes.** It separates "Go vs. Python" from "PyTorch vs. a lean runtime", which management needs to make a fair decision. |
-| Q5 | Parity tolerance? | **100 % label agreement and ≤ 1 × 10⁻⁵ largest probability difference** (spike: 3.6 × 10⁻⁷). |
-| Q6 | GitHub repository name? | e.g. `go-onnx-production` |
-| Q7 | AI dialogs and the **free-versions** constraint: which tools' conversations go in the repo, and do the tools you used meet the "free versions" requirement? | Export this Claude conversation and the Gemini reviews to `docs/ai-dialogs/` as PDF. **You need to confirm** whether your Claude plan counts as a free version under the assignment's wording; if not, consider noting it in the README or asking the instructor. |
-| Q8 | Executables? | Same as Week 4: Windows `.exe` (pure-Go backend) and macOS `.app` (thin Terminal wrapper). |
+| Q1 | Python framework | **PyTorch** (scikit-learn remains the proven fallback). |
+| Q2 | Model and data | **MNIST**, multilayer network 784 → 128 → 64 → 10, standard 10,000-image test set. Small CNN only as a stretch goal. |
+| Q3 | GoMLX backends | **Both:** XLA (macOS) and pure Go. |
+| Q4 | ONNX Runtime in Python | **Yes**, timed as a second Python row. |
+| Q5 | Parity tolerance | **100 % label agreement; largest probability difference ≤ 1 × 10⁻⁵**; no NaN/Inf. |
+| Q6 | Repository | `github.com/mioluigi/go-onnx-production` |
+| Q7 | AI dialogs; free-version constraint | Claude conversation and Gemini reviews saved to `docs/ai-dialogs/` (PDF or text). The README states which AI tools and tiers were used; **Luis confirms that statement**. |
+| Q8 | Executables | Windows `.exe` (pure-Go backend) and macOS `.app` (Terminal wrapper), as in Week 4. |

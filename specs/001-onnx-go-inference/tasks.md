@@ -21,7 +21,7 @@ early, while the Go packages are built in parallel on synthetic models.
   Verify: `go mod verify`.
 
 ## Phase 1 — The model (riskiest first)
-- [ ] **T02 🤖 `python/train_export.py`.** Train the 784 → 128 → 64 → 10 network (fixed seed), export ONNX (`input` → `probabilities`, dynamic batch, compatible IR version), copy the official test files, write PyTorch's test-set probabilities in IDX format, verify the export with ONNX Runtime before saving.
+- [x] **T02 🤖 `python/train_export.py`.** Train the 784 → 128 → 64 → 10 network (fixed seed), export ONNX (`input` → `probabilities`, dynamic batch, compatible IR version), copy the official test files, write PyTorch's test-set probabilities in IDX format, verify the export with ONNX Runtime before saving.
 - [ ] **T03 👤 Run it on the Mac; commit `assets/`.** Then run Claude's quick check (`go run ./internal/checkexport`, a throwaway parity check) — **the go/no-go gate** for the rest of the plan.
   Done when: test accuracy ~97–98 %; Go and PyTorch agree on all 10,000 images.
 

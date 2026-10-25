@@ -133,6 +133,12 @@ Median of 5 runs measured by `cmd/measure`: wall time from Go's monotonic clock,
   to load; the XLA backend starts its plugin.
 - **First prediction.** GoMLX compiles the model for each new batch size on its first call. With XLA this
   costs much more than a steady-state prediction, which is why a Go service should warm up at start-up.
+- **Cold versus warm start (XLA).** `measure.sh` timed the XLA program right after building it, so its
+  load and first-prediction figures above are from a *cold* first run. Five runs in a row after a rebuild
+  ([`results/xla-cold-warm.txt`](results/xla-cold-warm.txt)) show the first run much slower than the rest:
+  roughly 80 ms to load and 190 ms for the first prediction, then about 11 ms and 62 ms on later runs.
+  The first run's total time (about 1 s, most of it before the program starts, while macOS checks the
+  new executable) does not recur. The whole-program table below was measured later, warm.
 - **10,000 images.** Python's runtimes lead. The CPU profile of the pure-Go backend
   ([`results/cpu-profile.txt`](results/cpu-profile.txt)) shows about three quarters of its time in a
   matrix multiplication that does not use the processor's vector (SIMD) instructions on this Mac.

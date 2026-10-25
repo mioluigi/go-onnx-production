@@ -1,0 +1,20 @@
+XLA start-up, cold versus warm: five runs in a row, right after scripts/build.sh rebuilt the program
+Machine: see machine.txt (Apple M1 Max, macOS 27.0.1) · measured 2026-10-25 17:44 EDT
+Command: for i in 1 2 3 4 5; do /usr/bin/time -p dist/predict-digits -backend xla -runs 1 2>&1 | grep -E "Load model|First prediction|^real"; done
+("real" is the whole run's wall time in seconds, from /usr/bin/time)
+
+  Load model                81.04 ms
+  First prediction         192.95 ms   one image, includes compiling the graph
+real 1.08
+  Load model                10.97 ms
+  First prediction          61.42 ms   one image, includes compiling the graph
+real 0.18
+  Load model                10.70 ms
+  First prediction          61.45 ms   one image, includes compiling the graph
+real 0.19
+  Load model                12.21 ms
+  First prediction          61.58 ms   one image, includes compiling the graph
+real 0.19
+  Load model                11.07 ms
+  First prediction          62.58 ms   one image, includes compiling the graph
+real 0.18

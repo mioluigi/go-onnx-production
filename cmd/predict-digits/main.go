@@ -301,6 +301,13 @@ func loadTestSet() (testSet, error) {
 	return set, nil
 }
 
+// timings holds the four measures of plan section 8.
+type timings struct {
+	load, first, bulk      time.Duration
+	p50, p95               float64 // single-image latency, microseconds
+	bulkRuns, latencyCalls int
+}
+
 // checkAndTime checks parity with PyTorch on the whole test set and, if it
 // passes and runs > 0, times the model (Constitution 1: parity before speed).
 func checkAndTime(stdout io.Writer, logger *slog.Logger, m *inference.Model, source string, loadTime time.Duration, runs int) error {
@@ -308,38 +315,22 @@ func checkAndTime(stdout io.Writer, logger *slog.Logger, m *inference.Model, sou
 	if err != nil {
 		return err
 	}
-	count := len(set.inputs)
+	measured := timings{load: loadTime}
 
 	// The first prediction includes compiling the graph for a batch of one.
 	firstStart := time.Now()
 	if _, err := m.Predict(set.inputs[:1]); err != nil {
 		return err
 	}
-	firstTime := time.Since(firstStart)
+	measured.first = time.Since(firstStart)
 
-	probabilities, err := m.Predict(set.inputs)
+	report, correct, err := checkParity(m, set)
 	if err != nil {
 		return err
-	}
-	report, err := parity.Compare(probabilities, set.reference, parityTolerance)
-	if err != nil {
-		return err
-	}
-	correct := 0
-	for i, label := range parity.Labels(probabilities) {
-		if label == set.labels[i] {
-			correct++
-		}
 	}
 	logger.Info("parity checked", "pass", report.Pass(), "max_abs_diff", report.MaxAbsDiff,
 		"row", report.MaxDiffRow, "class", report.MaxDiffClass)
-
-	fmt.Fprintf(stdout, "MNIST digit classifier: PyTorch model run in Go with GoMLX\n")
-	fmt.Fprintf(stdout, "Model:    %s (%d inputs, %d classes)\n", source, m.NumFeatures(), m.NumClasses())
-	fmt.Fprintf(stdout, "Backend:  %s\n", m.BackendName())
-	fmt.Fprintf(stdout, "Test set: %s MNIST test images\n\n", thousands(count))
-	fmt.Fprintf(stdout, "Accuracy: %.2f %% (%s of %s correct)\n", 100*float64(correct)/float64(count), thousands(correct), thousands(count))
-	fmt.Fprintf(stdout, "Parity with PyTorch: %s\n", report)
+	printParity(stdout, m, source, report, correct, len(set.inputs))
 	if !report.Pass() {
 		return errors.New("Go's predictions do not match PyTorch's, so no timings are reported")
 	}
@@ -347,27 +338,67 @@ func checkAndTime(stdout io.Writer, logger *slog.Logger, m *inference.Model, sou
 		return nil
 	}
 
-	bulkRuns := min(maxBulkRuns, runs)
-	bulk, err := medianBulkTime(m, set.inputs, bulkRuns)
-	if err != nil {
+	if err := measureSteadyState(m, set.inputs, runs, &measured); err != nil {
 		return err
 	}
-	p50, p95, err := latency(m, set.inputs, runs)
-	if err != nil {
-		return err
-	}
-	logger.Info("timings done", "bulk_runs", bulkRuns, "latency_calls", runs)
-
-	fmt.Fprintf(stdout, "\nTimings (%s backend)\n", m.BackendName())
-	fmt.Fprintf(stdout, "  Load model           %10.2f ms\n", milliseconds(loadTime))
-	fmt.Fprintf(stdout, "  First prediction     %10.2f ms   one image, includes compiling the graph\n", milliseconds(firstTime))
-	fmt.Fprintf(stdout, "  %s images         %10.2f ms   one call, median of %d runs (%.2f µs per image)\n",
-		thousands(count), milliseconds(bulk), bulkRuns, microseconds(bulk)/float64(count))
-	fmt.Fprintf(stdout, "  One image, median    %10.1f µs   %d calls after %d warm-up calls\n", p50, runs, warmUpCalls)
-	fmt.Fprintf(stdout, "  One image, 95th pct  %10.1f µs\n\n", p95)
-	fmt.Fprintf(stdout, "benchmark language=go runtime=gomlx-%s load_ms=%.2f first_ms=%.2f bulk_ms=%.2f latency_p50_us=%.1f latency_p95_us=%.1f bulk_runs=%d latency_calls=%d\n",
-		m.BackendName(), milliseconds(loadTime), milliseconds(firstTime), milliseconds(bulk), p50, p95, bulkRuns, runs)
+	logger.Info("timings done", "bulk_runs", measured.bulkRuns, "latency_calls", measured.latencyCalls)
+	printTimings(stdout, m.BackendName(), measured, len(set.inputs))
 	return nil
+}
+
+// checkParity predicts the whole test set, compares it with PyTorch's
+// probabilities, and counts the predictions that match the true labels.
+func checkParity(m *inference.Model, set testSet) (report parity.Report, correct int, err error) {
+	probabilities, err := m.Predict(set.inputs)
+	if err != nil {
+		return parity.Report{}, 0, err
+	}
+	report, err = parity.Compare(probabilities, set.reference, parityTolerance)
+	if err != nil {
+		return parity.Report{}, 0, err
+	}
+	for i, label := range parity.Labels(probabilities) {
+		if label == set.labels[i] {
+			correct++
+		}
+	}
+	return report, correct, nil
+}
+
+// printParity writes the model, backend, accuracy, and parity verdict.
+func printParity(stdout io.Writer, m *inference.Model, source string, report parity.Report, correct, count int) {
+	fmt.Fprintf(stdout, "MNIST digit classifier: PyTorch model run in Go with GoMLX\n")
+	fmt.Fprintf(stdout, "Model:    %s (%d inputs, %d classes)\n", source, m.NumFeatures(), m.NumClasses())
+	fmt.Fprintf(stdout, "Backend:  %s\n", m.BackendName())
+	fmt.Fprintf(stdout, "Test set: %s MNIST test images\n\n", thousands(count))
+	fmt.Fprintf(stdout, "Accuracy: %.2f %% (%s of %s correct)\n", 100*float64(correct)/float64(count), thousands(correct), thousands(count))
+	fmt.Fprintf(stdout, "Parity with PyTorch: %s\n", report)
+}
+
+// measureSteadyState times bulk predictions (median of up to maxBulkRuns) and
+// single-image latency (runs calls), filling in the rest of measured.
+func measureSteadyState(m *inference.Model, inputs [][]float32, runs int, measured *timings) error {
+	measured.bulkRuns, measured.latencyCalls = min(maxBulkRuns, runs), runs
+	var err error
+	if measured.bulk, err = medianBulkTime(m, inputs, measured.bulkRuns); err != nil {
+		return err
+	}
+	measured.p50, measured.p95, err = latency(m, inputs, runs)
+	return err
+}
+
+// printTimings writes the timing table and the parseable benchmark line that
+// scripts/tables.sh reads (the same keys as python/bench_python.py).
+func printTimings(stdout io.Writer, backend string, t timings, count int) {
+	fmt.Fprintf(stdout, "\nTimings (%s backend)\n", backend)
+	fmt.Fprintf(stdout, "  Load model           %10.2f ms\n", milliseconds(t.load))
+	fmt.Fprintf(stdout, "  First prediction     %10.2f ms   one image, includes compiling the graph\n", milliseconds(t.first))
+	fmt.Fprintf(stdout, "  %s images         %10.2f ms   one call, median of %d runs (%.2f µs per image)\n",
+		thousands(count), milliseconds(t.bulk), t.bulkRuns, microseconds(t.bulk)/float64(count))
+	fmt.Fprintf(stdout, "  One image, median    %10.1f µs   %d calls after %d warm-up calls\n", t.p50, t.latencyCalls, warmUpCalls)
+	fmt.Fprintf(stdout, "  One image, 95th pct  %10.1f µs\n\n", t.p95)
+	fmt.Fprintf(stdout, "benchmark language=go runtime=gomlx-%s load_ms=%.2f first_ms=%.2f bulk_ms=%.2f latency_p50_us=%.1f latency_p95_us=%.1f bulk_runs=%d latency_calls=%d\n",
+		backend, milliseconds(t.load), milliseconds(t.first), milliseconds(t.bulk), t.p50, t.p95, t.bulkRuns, t.latencyCalls)
 }
 
 // medianBulkTime predicts all inputs in one call, runs times, and returns the median time.

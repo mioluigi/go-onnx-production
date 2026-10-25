@@ -29,7 +29,7 @@ def to_model_input(images_uint8):
 
 
 def write_idx(path, array):
-    """Write a uint8 or float32 array as a gzip-compressed IDX file."""
+    """Write a uint8 or float32 array as a gzip-compressed IDX file, identical bytes for identical data."""
     array = np.asarray(array)
     if array.dtype == np.uint8:
         type_code = IDX_UBYTE
@@ -38,7 +38,8 @@ def write_idx(path, array):
     else:
         raise ValueError(f"IDX supports uint8 and float32 here, got {array.dtype}")
     header = struct.pack(">BBBB", 0, 0, type_code, array.ndim) + struct.pack(f">{array.ndim}I", *array.shape)
-    with gzip.open(path, "wb") as out:
+    # mtime=0 and no stored file name make the output byte-for-byte reproducible.
+    with open(path, "wb") as raw, gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as out:
         out.write(header)
         out.write(array.astype(_DTYPES[type_code]).tobytes())
 

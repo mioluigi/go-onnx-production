@@ -28,7 +28,7 @@ early, while the Go packages are built in parallel on synthetic models.
 ## Phase 2 — Reusable packages (built on synthetic data; can overlap with T02–T03)
 - [x] **T04 🤖 `python/make_test_models.py` + `inference/testdata/`.** Tiny ONNX models with known answers.
 - [x] **T05 🔴🟢 `idx` package.** Tests, then implementation. Verify: `go test -cover ./idx/` ≥ 90 %.
-- [ ] **T06 🔴🟢 `parity` package.** Tests (incl. NaN), then implementation. Verify: ≥ 90 %.
+- [x] **T06 🔴🟢 `parity` package.** Tests (incl. NaN), then implementation. Verify: ≥ 90 %.
 - [ ] **T07 🔴 `inference` tests.** Known answers, fusion on/off, invalid model and input cases, `Labels`.
 - [ ] **T08 🟢 `inference` implementation.** Verify: `go test -cover ./inference/` ≥ 90 %, `go vet` clean.
 - [ ] **T09 🤖 Monte Carlo benchmarks** (`BenchmarkPredict/batch=1…10000`).

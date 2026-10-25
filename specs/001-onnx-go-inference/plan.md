@@ -88,8 +88,7 @@ func (m *Model) NumFeatures() int
 func (m *Model) NumClasses() int
 func (m *Model) Close()
 
-// Labels returns the most probable class of each row (arg max), replacing ONNX's label output.
-func Labels(probabilities [][]float32) []int
+// (Changed in T06: Labels, the arg max that replaces ONNX's label output, lives in package parity.)
 ```
 
 **Steps and reasons**
